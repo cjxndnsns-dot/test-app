@@ -10,7 +10,6 @@
         body{background:radial-gradient(circle at 50% -18%,rgba(255,210,0,.12),transparent 36%),linear-gradient(180deg,#090909 0%,#020202 100%)}
         button,input{font-family:inherit}
         
-        /* LOGIN */
         .gate{position:fixed;inset:0;z-index:50;display:grid;place-items:center;padding:18px;background:rgba(0,0,0,.52);backdrop-filter:blur(12px)}
         .gate-card{width:min(440px,92vw);padding:28px;border:1px solid rgba(255,255,255,.10);border-radius:32px;background:rgba(10,10,10,.88);box-shadow:0 26px 70px rgba(0,0,0,.62);text-align:center}
         .brand-logo img{width:180px;height:180px;object-fit:contain;border-radius:22px;filter:drop-shadow(0 0 22px rgba(255,211,0,.30))}
@@ -25,7 +24,6 @@
         .toast{position:fixed;left:50%;bottom:92px;z-index:90;transform:translate(-50%,20px);opacity:0;padding:12px 16px;border-radius:999px;background:rgba(18,18,18,.96);color:#e5e7eb;border:1px solid rgba(250,204,21,.20);transition:.25s;white-space:nowrap}
         .toast.active{opacity:1;transform:translate(-50%,0)}
 
-        /* APP */
         .app{max-width:520px;margin:0 auto;padding:16px 14px 90px;min-height:100vh;display:none}
         .topbar{display:flex;justify-content:space-between;align-items:center;padding:10px 0}
         .topbar h2{font-size:22px;margin:0}.topbar h2 span{color:#facc15}
@@ -110,7 +108,6 @@
 
         .overlay{position:fixed;inset:0;z-index:55;background:rgba(0,0,0,.6);backdrop-filter:blur(3px);display:none}
 
-        /* SPEED UI */
         .speed-level-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:10px 0}
         .speed-level{padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);text-align:center;cursor:pointer;transition:.2s;color:#9ca3af}
         .speed-level.active{border-color:#facc15;background:rgba(250,204,21,.12);color:#facc15}
@@ -126,6 +123,17 @@
         .speed-btn-group button{flex:1;padding:12px;border-radius:12px;border:0;font-weight:900;font-size:14px;cursor:pointer;transition:.2s}
         .speed-btn-group button.on{background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff}
         .speed-btn-group button.off{background:rgba(255,255,255,.08);color:#9ca3af}
+
+        /* GAME SELECTOR MODAL */
+        .game-selector-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:16px 0}
+        .game-option{padding:20px;border-radius:18px;border:2px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);text-align:center;cursor:pointer;transition:.2s}
+        .game-option.active{border-color:#facc15;background:rgba(250,204,21,.12)}
+        .game-option .game-icon{font-size:48px;display:block;margin-bottom:8px}
+        .game-option .game-name{font-weight:950;font-size:16px;color:#fff}
+        .game-option .game-desc{font-size:11px;color:#9ca3af;margin-top:4px}
+        .game-start-btn{width:100%;padding:16px;border:0;border-radius:16px;background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff;font-weight:950;font-size:18px;cursor:pointer;margin-top:10px}
+        .game-start-btn:active{transform:scale(.97)}
+        .game-start-btn:disabled{opacity:0.5;cursor:not-allowed}
 
         @media(max-width:430px){.gate-card{padding:18px}.brand-logo img{width:140px;height:140px}.gate h1{font-size:28px}.speed-level-grid{grid-template-columns:1fr 1fr}}
     </style>
@@ -186,22 +194,33 @@
 
     <div id="featureContainer"></div>
 
-    <div class="ff-selector" id="ffSelector">
-        <button class="ff-btn active" data-ff="freefire">
-            <span class="ff-icon">🔥</span>
-            Free Fire
-        </button>
-        <button class="ff-btn" data-ff="freefiremax">
-            <span class="ff-icon">⚡</span>
-            Free Fire Max
-        </button>
-    </div>
     <button class="activate-btn" id="activateBtn">🚀 KÍCH HOẠT & MỞ GAME</button>
 
     <div class="bottom-nav">
         <button class="active"><span>🏠</span><span>Trang chủ</span></button>
         <button><span>📋</span><span>Lịch sử</span></button>
         <button id="settingsNav"><span>⚙️</span><span>Cài đặt</span></button>
+    </div>
+</div>
+
+<!-- GAME SELECTOR MODAL -->
+<div class="modal" id="gameSelectorModal">
+    <div class="modal-card">
+        <button class="close" id="closeGameSelector">✕</button>
+        <div class="modal-title"><span>🎮</span><div><h3>Chọn phiên bản Free Fire</h3><p>Chọn game bạn muốn mở</p></div></div>
+        <div class="game-selector-grid">
+            <div class="game-option active" data-game="freefire">
+                <span class="game-icon">🔥</span>
+                <div class="game-name">Free Fire</div>
+                <div class="game-desc">Phiên bản gốc</div>
+            </div>
+            <div class="game-option" data-game="freefiremax">
+                <span class="game-icon">⚡</span>
+                <div class="game-name">Free Fire Max</div>
+                <div class="game-desc">Phiên bản nâng cấp</div>
+            </div>
+        </div>
+        <button class="game-start-btn" id="gameStartBtn">▶ BẮT ĐẦU</button>
     </div>
 </div>
 
@@ -255,10 +274,8 @@
 
 <script>
 // ==================== CẤU HÌNH ANDROID ====================
-// FIREBASE MỚI
 const FIREBASE_URL = "https://aimlock-key-default-rtdb.firebaseio.com";
 const PLATFORM = "android";
-const API_BASE = "https://headlock-jame-production.up.railway.app";
 
 const STORAGE = {
     DEVICE: "headlock_device",
@@ -343,7 +360,7 @@ function toggleFeature(feature, enabled) {
     callNative(feature, { enabled: enabled });
 }
 
-// ==================== FIREBASE (MỚI) ====================
+// ==================== FIREBASE ====================
 async function activateKey(key) {
     try {
         const res = await fetch(`${FIREBASE_URL}/keys/${key}.json`);
@@ -445,7 +462,6 @@ function renderFeatures(keyLevel) {
     container.innerHTML = html;
     updateVipStats(keyLevel);
     
-    // Khôi phục trạng thái SPEED từ localStorage
     const speedEnabled = localStorage.getItem(STORAGE.SPEED_ENABLED) === 'true';
     if (speedEnabled) {
         const sw = document.querySelector('.feature-item[data-feature="speed"] .switch');
@@ -454,7 +470,6 @@ function renderFeatures(keyLevel) {
         applySpeedMode();
     }
     
-    // Khôi phục các toggle đã bật trước đó (chỉ các tính năng không phải speed/optimize)
     ALL_FEATURES.forEach(f => {
         if (f.id === 'speed' || f.id === 'optimize') return;
         const saved = localStorage.getItem('toggle_' + f.id) === 'true';
@@ -675,31 +690,48 @@ function openGame(version) {
     setTimeout(() => iframe.remove(), 2000);
 }
 
-function activateAndOpen() {
+// ==================== GAME SELECTOR ====================
+let selectedGame = 'freefire';
+
+function showGameSelector() {
     if (!isLoggedIn) { showToast("Chưa đăng nhập!"); return; }
+    document.getElementById('gameSelectorModal').style.display = 'flex';
+    document.getElementById('overlay').style.display = 'block';
+    // Reset active
+    document.querySelectorAll('.game-option').forEach(el => {
+        el.classList.toggle('active', el.dataset.game === selectedGame);
+    });
+    document.getElementById('gameStartBtn').disabled = false;
+    document.getElementById('gameStartBtn').textContent = '▶ BẮT ĐẦU';
+}
+
+function startSelectedGame() {
+    const btn = document.getElementById('gameStartBtn');
+    btn.disabled = true;
+    btn.textContent = '⏳ Đang mở...';
     
-    const selector = document.getElementById('ffSelector');
-    selector.classList.toggle('show');
-    
-    if (selector.classList.contains('show')) {
-        const active = document.querySelector('.ff-btn.active');
-        if (active) {
-            const version = active.dataset.ff;
-            localStorage.setItem("HEADLOCK_FF", version);
-            document.querySelectorAll('.feature-item .switch.active:not(.locked)').forEach(sw => {
-                const id = sw.dataset.feature;
-                if (id) {
-                    localStorage.setItem('toggle_' + id, 'true');
-                    toggleFeature(id, true);
-                }
-            });
-            updateVipStats(currentKeyType);
-            const name = version === 'freefire' ? 'Free Fire' : 'Free Fire Max';
-            showToast('✅ Đang mở ' + name + ' (Android)');
-            selector.classList.remove('show');
-            setTimeout(() => openGame(version), 500);
+    // Lưu tất cả toggle đang bật
+    document.querySelectorAll('.feature-item .switch.active:not(.locked)').forEach(sw => {
+        const id = sw.dataset.feature;
+        if (id) {
+            localStorage.setItem('toggle_' + id, 'true');
+            toggleFeature(id, true);
         }
-    }
+    });
+    updateVipStats(currentKeyType);
+    
+    const name = selectedGame === 'freefire' ? 'Free Fire' : 'Free Fire Max';
+    showToast('✅ Đang mở ' + name + ' (Android)');
+    
+    // Đóng modal
+    document.getElementById('gameSelectorModal').style.display = 'none';
+    document.getElementById('overlay').style.display = 'none';
+    
+    setTimeout(() => {
+        openGame(selectedGame);
+        btn.disabled = false;
+        btn.textContent = '▶ BẮT ĐẦU';
+    }, 600);
 }
 
 // ==================== DOM EVENTS ====================
@@ -773,16 +805,26 @@ document.addEventListener('DOMContentLoaded', function() {
         if (confirm('Đăng xuất?')) handleLogout();
     });
     
-    // FF Selector
-    document.querySelectorAll('.ff-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-            document.querySelectorAll('.ff-btn').forEach(b => b.classList.remove('active'));
+    // Activate -> show game selector
+    document.getElementById('activateBtn').addEventListener('click', showGameSelector);
+    
+    // Game selector
+    document.querySelectorAll('.game-option').forEach(opt => {
+        opt.addEventListener('click', function() {
+            document.querySelectorAll('.game-option').forEach(o => o.classList.remove('active'));
             this.classList.add('active');
+            selectedGame = this.dataset.game;
+            document.getElementById('gameStartBtn').disabled = false;
+            document.getElementById('gameStartBtn').textContent = '▶ BẮT ĐẦU';
         });
     });
     
-    // Activate
-    document.getElementById('activateBtn').addEventListener('click', activateAndOpen);
+    document.getElementById('gameStartBtn').addEventListener('click', startSelectedGame);
+    
+    document.getElementById('closeGameSelector').addEventListener('click', () => {
+        document.getElementById('gameSelectorModal').style.display = 'none';
+        document.getElementById('overlay').style.display = 'none';
+    });
     
     // Speed UI
     document.querySelectorAll('.speed-level').forEach(btn => {
@@ -927,6 +969,7 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('infoPanel').classList.remove('active');
         document.getElementById('optimizeModal').style.display = 'none';
         document.getElementById('speedModal').style.display = 'none';
+        document.getElementById('gameSelectorModal').style.display = 'none';
         document.getElementById('overlay').style.display = 'none';
     });
     
