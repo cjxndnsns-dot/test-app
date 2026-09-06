@@ -71,12 +71,6 @@
         .switch.locked{opacity:0.3;cursor:not-allowed;background:#2a2a2a}
         .switch.locked:before{background:#666}
 
-        .ff-selector{display:none;gap:10px;margin:12px 0;padding:14px;background:rgba(16,16,16,.86);border-radius:16px;border:1px solid rgba(255,255,255,.08)}
-        .ff-selector.show{display:flex}
-        .ff-btn{flex:1;padding:14px;border-radius:14px;border:2px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);color:#fff;font-weight:900;cursor:pointer;transition:.2s;font-size:14px}
-        .ff-btn.active{border-color:#facc15;background:rgba(250,204,21,.15)}
-        .ff-btn .ff-icon{font-size:24px;display:block;margin-bottom:4px}
-        
         .activate-btn{width:100%;padding:16px;border:0;border-radius:16px;background:linear-gradient(135deg,#facc15,#f4b400);color:#0b0b0b;font-weight:950;font-size:17px;cursor:pointer;margin:10px 0;box-shadow:0 8px 25px rgba(250,204,21,.25)}
         .activate-btn:active{transform:scale(.97)}
 
@@ -357,11 +351,9 @@ function callNative(action, data) {
 }
 
 function toggleFeature(feature, enabled) {
-    // Chỉ gọi native nếu có bridge
     if (hasAndroidBridge()) {
         callNative(feature, { enabled: enabled });
     }
-    // Luôn lưu trạng thái
     localStorage.setItem('toggle_' + feature, enabled ? 'true' : 'false');
 }
 
@@ -449,7 +441,6 @@ function renderFeatures(keyLevel) {
             const locked = !isAllowed;
             const lockClass = locked ? 'locked' : '';
             const tagHtml = f.tag ? `<span class="vip-tag">${f.tag}</span>` : '';
-            // Khôi phục trạng thái từ localStorage
             const savedState = localStorage.getItem('toggle_' + f.id) === 'true';
             const activeClass = savedState && !locked ? 'active' : '';
             
@@ -470,7 +461,6 @@ function renderFeatures(keyLevel) {
     container.innerHTML = html;
     updateVipStats(keyLevel);
     
-    // Khôi phục SPEED
     const speedEnabled = localStorage.getItem(STORAGE.SPEED_ENABLED) === 'true';
     if (speedEnabled) {
         const sw = document.querySelector('.feature-item[data-feature="speed"] .switch');
@@ -673,35 +663,50 @@ function handleLogout() {
     showToast('🚪 Đã đăng xuất');
 }
 
-// ==================== OPEN GAME ====================
-function openGame(version) {
-    const schemes = {
-        'freefire': 'freefireth://',
-        'freefiremax': 'freefiremax://'
+// ==================== OPEN GAME TRỰC TIẾP KHÔNG CẦN THỦ CÔNG ====================
+function openGameDirect(version) {
+    // Package names
+    const packages = {
+        'freefire': 'com.dts.freefireth',
+        'freefiremax': 'com.dts.freefiremax'
     };
-    const scheme = schemes[version] || schemes['freefire'];
     
-    // Kiểm tra nền tảng iOS
+    const scheme = version === 'freefiremax' ? 'freefiremax://' : 'freefireth://';
+    const pkg = packages[version] || packages['freefire'];
+    
+    // Kiểm tra nền tảng
     const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
     
     if (isIOS) {
-        showToast('📱 Vui lòng mở Free Fire thủ công trên iOS!');
+        showToast('📱 Hệ điều hành iOS không hỗ trợ mở tự động!');
         return;
     }
     
-    // Android: mở bằng intent
+    // Android: mở bằng intent (cách mạnh nhất)
     try {
-        // Thử dùng intent:// cho Android
-        const intentUrl = `intent://${version === 'freefiremax' ? 'freefiremax' : 'freefire'}#Intent;package=${version === 'freefiremax' ? 'com.dts.freefiremax' : 'com.dts.freefireth'};end;`;
+        // Cách 1: Intent URL
+        const intentUrl = `intent://${version === 'freefiremax' ? 'freefiremax' : 'freefire'}#Intent;package=${pkg};end;`;
         window.location.href = intentUrl;
+        
+        // Fallback: nếu intent không hoạt động, dùng scheme
+        setTimeout(() => {
+            const iframe = document.createElement("iframe");
+            iframe.style.display = "none";
+            iframe.src = scheme;
+            document.body.appendChild(iframe);
+            setTimeout(() => iframe.remove(), 3000);
+        }, 500);
+        
+        // Cách 2: Trực tiếp location.href với scheme
+        setTimeout(() => {
+            window.location.href = scheme;
+        }, 1000);
+        
+        showToast('🚀 Đang mở ' + (version === 'freefiremax' ? 'Free Fire Max' : 'Free Fire'));
     } catch(e) {
-        // Fallback: dùng scheme cũ
-        const iframe = document.createElement("iframe");
-        iframe.style.display = "none";
-        iframe.src = scheme;
-        document.body.appendChild(iframe);
+        // Fallback cuối cùng
         window.location.href = scheme;
-        setTimeout(() => iframe.remove(), 2000);
+        showToast('🚀 Đang mở game...');
     }
 }
 
@@ -733,16 +738,17 @@ function startSelectedGame() {
     updateVipStats(currentKeyType);
     
     const name = selectedGame === 'freefire' ? 'Free Fire' : 'Free Fire Max';
-    showToast('✅ Đang mở ' + name + ' (Android)');
+    showToast('🚀 Đang mở ' + name);
     
     document.getElementById('gameSelectorModal').style.display = 'none';
     document.getElementById('overlay').style.display = 'none';
     
+    // Mở game trực tiếp sau 300ms
     setTimeout(() => {
-        openGame(selectedGame);
+        openGameDirect(selectedGame);
         btn.disabled = false;
         btn.textContent = '▶ BẮT ĐẦU';
-    }, 600);
+    }, 400);
 }
 
 // ==================== DOM EVENTS ====================
