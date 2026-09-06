@@ -124,7 +124,6 @@
         .speed-btn-group button.on{background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff}
         .speed-btn-group button.off{background:rgba(255,255,255,.08);color:#9ca3af}
 
-        /* GAME SELECTOR MODAL */
         .game-selector-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:16px 0}
         .game-option{padding:20px;border-radius:18px;border:2px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);text-align:center;cursor:pointer;transition:.2s}
         .game-option.active{border-color:#facc15;background:rgba(250,204,21,.12)}
@@ -273,7 +272,7 @@
 <div class="toast" id="toast"></div>
 
 <script>
-// ==================== CẤU HÌNH ANDROID ====================
+// ==================== CẤU HÌNH ====================
 const FIREBASE_URL = "https://aimlock-key-default-rtdb.firebaseio.com";
 const PLATFORM = "android";
 
@@ -298,6 +297,7 @@ let isLoggedIn = false;
 let checkInterval = null;
 let expiryInterval = null;
 let currentKeyType = 'free';
+let selectedGame = 'freefire';
 
 // ==================== FEATURES ====================
 const ALL_FEATURES = [
@@ -338,7 +338,7 @@ function showToast(msg) {
     window.toastTimeout = setTimeout(() => t.classList.remove('active'), 2500);
 }
 
-// ==================== HAS ANDROID BRIDGE ====================
+// ==================== ANDROID BRIDGE ====================
 function hasAndroidBridge() {
     return typeof AndroidBridge !== "undefined";
 }
@@ -357,7 +357,12 @@ function callNative(action, data) {
 }
 
 function toggleFeature(feature, enabled) {
-    callNative(feature, { enabled: enabled });
+    // Chỉ gọi native nếu có bridge
+    if (hasAndroidBridge()) {
+        callNative(feature, { enabled: enabled });
+    }
+    // Luôn lưu trạng thái
+    localStorage.setItem('toggle_' + feature, enabled ? 'true' : 'false');
 }
 
 // ==================== FIREBASE ====================
@@ -444,6 +449,9 @@ function renderFeatures(keyLevel) {
             const locked = !isAllowed;
             const lockClass = locked ? 'locked' : '';
             const tagHtml = f.tag ? `<span class="vip-tag">${f.tag}</span>` : '';
+            // Khôi phục trạng thái từ localStorage
+            const savedState = localStorage.getItem('toggle_' + f.id) === 'true';
+            const activeClass = savedState && !locked ? 'active' : '';
             
             html += `
                 <div class="feature-item" data-feature="${f.id}">
@@ -452,7 +460,7 @@ function renderFeatures(keyLevel) {
                         <b>${f.name} ${tagHtml}</b>
                         <small>${f.desc}</small>
                     </div>
-                    <div class="switch ${lockClass}" data-feature="${f.id}"></div>
+                    <div class="switch ${lockClass} ${activeClass}" data-feature="${f.id}"></div>
                 </div>
             `;
         });
@@ -462,6 +470,7 @@ function renderFeatures(keyLevel) {
     container.innerHTML = html;
     updateVipStats(keyLevel);
     
+    // Khôi phục SPEED
     const speedEnabled = localStorage.getItem(STORAGE.SPEED_ENABLED) === 'true';
     if (speedEnabled) {
         const sw = document.querySelector('.feature-item[data-feature="speed"] .switch');
@@ -469,17 +478,6 @@ function renderFeatures(keyLevel) {
         renderSpeedUI();
         applySpeedMode();
     }
-    
-    ALL_FEATURES.forEach(f => {
-        if (f.id === 'speed' || f.id === 'optimize') return;
-        const saved = localStorage.getItem('toggle_' + f.id) === 'true';
-        if (saved) {
-            const sw = document.querySelector(`.feature-item[data-feature="${f.id}"] .switch`);
-            if (sw && !sw.classList.contains('locked')) {
-                sw.classList.add('active');
-            }
-        }
-    });
     updateVipStats(keyLevel);
 }
 
@@ -682,22 +680,36 @@ function openGame(version) {
         'freefiremax': 'freefiremax://'
     };
     const scheme = schemes[version] || schemes['freefire'];
-    const iframe = document.createElement("iframe");
-    iframe.style.display = "none";
-    iframe.src = scheme;
-    document.body.appendChild(iframe);
-    window.location.href = scheme;
-    setTimeout(() => iframe.remove(), 2000);
+    
+    // Kiểm tra nền tảng iOS
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    
+    if (isIOS) {
+        showToast('📱 Vui lòng mở Free Fire thủ công trên iOS!');
+        return;
+    }
+    
+    // Android: mở bằng intent
+    try {
+        // Thử dùng intent:// cho Android
+        const intentUrl = `intent://${version === 'freefiremax' ? 'freefiremax' : 'freefire'}#Intent;package=${version === 'freefiremax' ? 'com.dts.freefiremax' : 'com.dts.freefireth'};end;`;
+        window.location.href = intentUrl;
+    } catch(e) {
+        // Fallback: dùng scheme cũ
+        const iframe = document.createElement("iframe");
+        iframe.style.display = "none";
+        iframe.src = scheme;
+        document.body.appendChild(iframe);
+        window.location.href = scheme;
+        setTimeout(() => iframe.remove(), 2000);
+    }
 }
 
 // ==================== GAME SELECTOR ====================
-let selectedGame = 'freefire';
-
 function showGameSelector() {
     if (!isLoggedIn) { showToast("Chưa đăng nhập!"); return; }
     document.getElementById('gameSelectorModal').style.display = 'flex';
     document.getElementById('overlay').style.display = 'block';
-    // Reset active
     document.querySelectorAll('.game-option').forEach(el => {
         el.classList.toggle('active', el.dataset.game === selectedGame);
     });
@@ -723,7 +735,6 @@ function startSelectedGame() {
     const name = selectedGame === 'freefire' ? 'Free Fire' : 'Free Fire Max';
     showToast('✅ Đang mở ' + name + ' (Android)');
     
-    // Đóng modal
     document.getElementById('gameSelectorModal').style.display = 'none';
     document.getElementById('overlay').style.display = 'none';
     
@@ -917,7 +928,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Normal toggle
         sw.classList.toggle('active');
         const state = sw.classList.contains('active');
-        localStorage.setItem('toggle_' + feature, state);
+        localStorage.setItem('toggle_' + feature, state ? 'true' : 'false');
         toggleFeature(feature, state);
         const name = sw.closest('.feature-item')?.querySelector('.info b')?.textContent || feature;
         showToast(state ? '✅ Đã bật ' + name : '⛔ Đã tắt ' + name);
