@@ -7,126 +7,135 @@
     <style>
         *{box-sizing:border-box}
         html,body{margin:0;min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;background:#040404;color:#fff;overflow-x:hidden;user-select:none}
-        body{background:radial-gradient(circle at 50% -18%,rgba(255,210,0,.12),transparent 36%),linear-gradient(180deg,#090909 0%,#020202 100%)}
+        body{background:radial-gradient(circle at 50% -18%,rgba(255,0,0,.15),transparent 36%),linear-gradient(180deg,#1a0000 0%,#0a0000 100%)}
         button,input{font-family:inherit}
         
-        .gate{position:fixed;inset:0;z-index:50;display:grid;place-items:center;padding:18px;background:rgba(0,0,0,.52);backdrop-filter:blur(12px)}
-        .gate-card{width:min(440px,92vw);padding:28px;border:1px solid rgba(255,255,255,.10);border-radius:32px;background:rgba(10,10,10,.88);box-shadow:0 26px 70px rgba(0,0,0,.62);text-align:center}
-        .brand-logo img{width:180px;height:180px;object-fit:contain;border-radius:22px;filter:drop-shadow(0 0 22px rgba(255,211,0,.30))}
-        .gate h1{font-size:38px;letter-spacing:.9px;margin:10px 0}.gate h1 span{color:#facc15}
-        .byline{color:#facc15;font-weight:900;letter-spacing:1px;margin-bottom:20px}
-        .platform-badge{background:rgba(34,197,94,0.2);color:#4ade80;border:1px solid rgba(34,197,94,0.3);padding:5px 16px;border-radius:999px;font-size:13px;font-weight:900;display:inline-block;margin-bottom:10px}
-        .input-row{height:60px;display:grid;grid-template-columns:36px 1fr 50px;gap:6px;align-items:center;border:1px solid rgba(255,255,255,.14);background:rgba(18,18,18,.92);border-radius:20px;padding:0 10px}
+        .gate{position:fixed;inset:0;z-index:50;display:grid;place-items:center;padding:18px;background:rgba(0,0,0,.72);backdrop-filter:blur(12px)}
+        .gate-card{width:min(440px,92vw);padding:28px;border:1px solid rgba(255,50,50,.25);border-radius:32px;background:rgba(20,5,5,.92);box-shadow:0 26px 70px rgba(200,0,0,.25);text-align:center}
+        .brand-logo img{width:180px;height:180px;object-fit:contain;border-radius:22px;filter:drop-shadow(0 0 22px rgba(255,0,0,.35))}
+        .gate h1{font-size:38px;letter-spacing:.9px;margin:10px 0}.gate h1 span{color:#ff3333}
+        .byline{color:#ff3333;font-weight:900;letter-spacing:1px;margin-bottom:20px}
+        .platform-badge{background:rgba(255,50,50,0.2);color:#ff6666;border:1px solid rgba(255,50,50,0.3);padding:5px 16px;border-radius:999px;font-size:13px;font-weight:900;display:inline-block;margin-bottom:10px}
+        .input-row{height:60px;display:grid;grid-template-columns:36px 1fr 50px;gap:6px;align-items:center;border:1px solid rgba(255,50,50,.2);background:rgba(30,10,10,.92);border-radius:20px;padding:0 10px}
         .input-row input{width:100%;height:100%;border:0;background:transparent;color:#fff;font-size:18px;outline:none}
-        .primary-btn{width:100%;height:60px;margin-top:15px;border:0;border-radius:20px;color:#0b0b0b;font-size:19px;font-weight:950;background:linear-gradient(135deg,#ffe55a,#f4b400);cursor:pointer}
-        #keyExpiryDisplay{color:#facc15;font-size:16px;font-weight:900;padding:10px;border-radius:12px;background:rgba(250,204,21,0.1);border:1px solid rgba(250,204,21,0.2);margin:10px 0}
-        .message{min-height:24px;margin:10px 0;text-align:center;font-size:14px}.message.err{color:#fecaca}.message.ok{color:#bbf7d0}
-        .toast{position:fixed;left:50%;bottom:92px;z-index:90;transform:translate(-50%,20px);opacity:0;padding:12px 16px;border-radius:999px;background:rgba(18,18,18,.96);color:#e5e7eb;border:1px solid rgba(250,204,21,.20);transition:.25s;white-space:nowrap}
+        .primary-btn{width:100%;height:60px;margin-top:15px;border:0;border-radius:20px;color:#0b0b0b;font-size:19px;font-weight:950;background:linear-gradient(135deg,#ff4444,#cc0000);cursor:pointer}
+        #keyExpiryDisplay{color:#ff3333;font-size:16px;font-weight:900;padding:10px;border-radius:12px;background:rgba(255,0,0,0.1);border:1px solid rgba(255,0,0,0.2);margin:10px 0}
+        .message{min-height:24px;margin:10px 0;text-align:center;font-size:14px}.message.err{color:#ff8888}.message.ok{color:#66ff88}
+        .toast{position:fixed;left:50%;bottom:92px;z-index:90;transform:translate(-50%,20px);opacity:0;padding:12px 16px;border-radius:999px;background:rgba(20,5,5,.96);color:#ff8888;border:1px solid rgba(255,50,50,.20);transition:.25s;white-space:nowrap}
         .toast.active{opacity:1;transform:translate(-50%,0)}
 
         .app{max-width:520px;margin:0 auto;padding:16px 14px 90px;min-height:100vh;display:none}
         .topbar{display:flex;justify-content:space-between;align-items:center;padding:10px 0}
-        .topbar h2{font-size:22px;margin:0}.topbar h2 span{color:#facc15}
-        .topbar .badge{color:#7ee34b;font-weight:900;font-size:13px;display:flex;align-items:center;gap:6px}
-        .topbar .badge i{width:8px;height:8px;background:#7ee34b;border-radius:50%;display:inline-block}
+        .topbar h2{font-size:22px;margin:0}.topbar h2 span{color:#ff3333}
+        .topbar .badge{color:#ff6666;font-weight:900;font-size:13px;display:flex;align-items:center;gap:6px}
+        .topbar .badge i{width:8px;height:8px;background:#ff3333;border-radius:50%;display:inline-block}
 
-        .admin-banner{background:linear-gradient(135deg,rgba(250,204,21,.12),rgba(20,20,20,.95));border-radius:16px;padding:14px 16px;border:1px solid rgba(250,204,21,.2);margin:10px 0;display:flex;align-items:center;gap:12px}
-        .admin-banner .admin-avatar{width:44px;height:44px;border-radius:50%;border:2px solid #facc15;object-fit:cover;flex-shrink:0}
+        .admin-banner{background:linear-gradient(135deg,rgba(255,0,0,.12),rgba(20,5,5,.95));border-radius:16px;padding:14px 16px;border:1px solid rgba(255,50,50,.2);margin:10px 0;display:flex;align-items:center;gap:12px}
+        .admin-banner .admin-avatar{width:44px;height:44px;border-radius:50%;border:2px solid #ff3333;object-fit:cover;flex-shrink:0}
         .admin-banner .admin-info{flex:1}
-        .admin-banner .admin-name{color:#facc15;font-weight:950;font-size:14px}
-        .admin-banner .admin-msg{color:#9ca3af;font-size:12px;line-height:1.4}
-        .admin-banner .admin-version{color:#4ade80;font-weight:900;font-size:13px;background:rgba(34,197,94,.15);padding:2px 10px;border-radius:999px;border:1px solid rgba(34,197,94,.2)}
+        .admin-banner .admin-name{color:#ff3333;font-weight:950;font-size:14px}
+        .admin-banner .admin-msg{color:#aa8888;font-size:12px;line-height:1.4}
+        .admin-banner .admin-version{color:#ff6666;font-weight:900;font-size:13px;background:rgba(255,50,50,.15);padding:2px 10px;border-radius:999px;border:1px solid rgba(255,50,50,.2)}
 
-        .key-info{background:linear-gradient(135deg,rgba(16,16,16,.95),rgba(30,30,30,.9));border-radius:20px;padding:18px 20px;border:1px solid rgba(250,204,21,.25);margin:10px 0}
+        .key-info{background:linear-gradient(135deg,rgba(20,5,5,.95),rgba(30,10,10,.9));border-radius:20px;padding:18px 20px;border:1px solid rgba(255,50,50,.25);margin:10px 0}
         .key-info .row{display:flex;justify-content:space-between;align-items:center;padding:6px 0}
-        .key-info .label{color:#9ca3af;font-size:14px;font-weight:800}
-        .key-info .value{color:#facc15;font-weight:950;font-size:16px}
+        .key-info .label{color:#aa8888;font-size:14px;font-weight:800}
+        .key-info .value{color:#ff3333;font-weight:950;font-size:16px}
         .key-info .type-badge{padding:5px 16px;border-radius:999px;font-size:12px;font-weight:950}
-        .type-badge.free{background:rgba(34,197,94,0.2);color:#4ade80;border:1px solid rgba(34,197,94,0.3)}
-        .type-badge.thuong{background:rgba(59,130,246,0.2);color:#60a5fa;border:1px solid rgba(59,130,246,0.3)}
-        .type-badge.vip{background:rgba(250,204,21,0.25);color:#facc15;border:1px solid rgba(250,204,21,0.4)}
+        .type-badge.free{background:rgba(255,50,50,0.2);color:#ff6666;border:1px solid rgba(255,50,50,0.3)}
+        .type-badge.thuong{background:rgba(255,100,50,0.2);color:#ff8844;border:1px solid rgba(255,100,50,0.3)}
+        .type-badge.vip{background:rgba(255,50,50,0.25);color:#ff3333;border:1px solid rgba(255,50,50,0.4)}
 
-        .vip-card{background:linear-gradient(135deg,rgba(250,204,21,.08),rgba(20,20,20,.95));border-radius:20px;padding:18px 20px;border:1px solid rgba(250,204,21,.2);margin:12px 0;text-align:center}
-        .vip-card .vip-title{font-size:22px;font-weight:950;color:#facc15;letter-spacing:2px}
-        .vip-card .vip-sub{color:#9ca3af;font-size:13px;font-weight:800;margin:4px 0 12px}
+        .vip-card{background:linear-gradient(135deg,rgba(255,0,0,.08),rgba(20,5,5,.95));border-radius:20px;padding:18px 20px;border:1px solid rgba(255,50,50,.2);margin:12px 0;text-align:center}
+        .vip-card .vip-title{font-size:22px;font-weight:950;color:#ff3333;letter-spacing:2px}
+        .vip-card .vip-sub{color:#aa8888;font-size:13px;font-weight:800;margin:4px 0 12px}
         .vip-card .vip-stats{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0}
         .vip-card .stat-item{background:rgba(255,255,255,.04);border-radius:14px;padding:12px;border:1px solid rgba(255,255,255,.06)}
-        .vip-card .stat-item .num{font-size:24px;font-weight:950;color:#facc15}
-        .vip-card .stat-item .lbl{font-size:11px;color:#9ca3af;font-weight:800;margin-top:4px}
+        .vip-card .stat-item .num{font-size:24px;font-weight:950;color:#ff3333}
+        .vip-card .stat-item .lbl{font-size:11px;color:#aa8888;font-weight:800;margin-top:4px}
 
-        .feature-group{background:rgba(16,16,16,.86);border-radius:18px;border:1px solid rgba(255,255,255,.08);margin:10px 0;overflow:hidden}
-        .group-header{padding:12px 18px;background:rgba(255,255,255,.05);border-bottom:1px solid rgba(255,255,255,.07);font-weight:950;font-size:15px;display:flex;justify-content:space-between;align-items:center}
+        .feature-group{background:rgba(20,5,5,.86);border-radius:18px;border:1px solid rgba(255,50,50,.08);margin:10px 0;overflow:hidden}
+        .group-header{padding:12px 18px;background:rgba(255,50,50,.05);border-bottom:1px solid rgba(255,50,50,.07);font-weight:950;font-size:15px;display:flex;justify-content:space-between;align-items:center}
         .group-header .lock-icon{font-size:14px}
-        .group-header .unlocked{color:#4ade80}.group-header .locked{color:#f87171}
-        .feature-item{display:grid;grid-template-columns:44px 1fr 50px;align-items:center;padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.04);gap:10px}
+        .group-header .unlocked{color:#ff6666}.group-header .locked{color:#663333}
+        .feature-item{display:grid;grid-template-columns:44px 1fr 50px;align-items:center;padding:12px 16px;border-bottom:1px solid rgba(255,50,50,.04);gap:10px}
         .feature-item:last-child{border-bottom:0}
         .feature-item .icon{font-size:22px;text-align:center}
         .feature-item .info b{display:block;font-size:15px;font-weight:950}
-        .feature-item .info small{color:#9ca3af;font-size:11px;font-weight:800}
-        .feature-item .info .vip-tag{color:#facc15;font-size:10px;font-weight:950;margin-left:6px;background:rgba(250,204,21,.15);padding:1px 8px;border-radius:999px}
-        .switch{width:44px;height:26px;border-radius:999px;background:#343434;position:relative;cursor:pointer;transition:.2s;flex-shrink:0}
-        .switch:before{content:"";width:20px;height:20px;border-radius:50%;background:#f5f5f5;position:absolute;top:3px;left:3px;transition:.2s}
-        .switch.active{background:linear-gradient(135deg,#ffe55a,#f4b400)}
-        .switch.active:before{left:21px}
-        .switch.locked{opacity:0.3;cursor:not-allowed;background:#2a2a2a}
-        .switch.locked:before{background:#666}
+        .feature-item .info small{color:#aa8888;font-size:11px;font-weight:800}
+        .feature-item .info .vip-tag{color:#ff3333;font-size:10px;font-weight:950;margin-left:6px;background:rgba(255,50,50,.15);padding:1px 8px;border-radius:999px}
+        .switch{width:44px;height:26px;border-radius:999px;background:#2a1a1a;position:relative;cursor:pointer;transition:.2s;flex-shrink:0}
+        .switch:before{content:"";width:20px;height:20px;border-radius:50%;background:#553333;position:absolute;top:3px;left:3px;transition:.2s}
+        .switch.active{background:linear-gradient(135deg,#ff4444,#cc0000)}
+        .switch.active:before{left:21px;background:#fff}
+        .switch.locked{opacity:0.3;cursor:not-allowed;background:#1a0a0a}
+        .switch.locked:before{background:#442222}
 
-        .activate-btn{width:100%;padding:16px;border:0;border-radius:16px;background:linear-gradient(135deg,#facc15,#f4b400);color:#0b0b0b;font-weight:950;font-size:17px;cursor:pointer;margin:10px 0;box-shadow:0 8px 25px rgba(250,204,21,.25)}
+        .activate-btn{width:100%;padding:16px;border:0;border-radius:16px;background:linear-gradient(135deg,#ff4444,#cc0000);color:#fff;font-weight:950;font-size:17px;cursor:pointer;margin:10px 0;box-shadow:0 8px 25px rgba(255,0,0,.25)}
         .activate-btn:active{transform:scale(.97)}
 
         .modal{position:fixed;inset:0;z-index:70;display:none;place-items:center;padding:18px;background:rgba(0,0,0,.7);backdrop-filter:blur(4px)}
-        .modal-card{width:min(430px,94vw);border-radius:24px;padding:22px;background:rgba(9,10,12,.97);border:1px solid rgba(255,255,255,.10);max-height:90vh;overflow-y:auto;position:relative}
+        .modal-card{width:min(430px,94vw);border-radius:24px;padding:22px;background:rgba(20,5,5,.97);border:1px solid rgba(255,50,50,.10);max-height:90vh;overflow-y:auto;position:relative}
         .modal-title{display:flex;align-items:center;gap:12px;margin-bottom:15px}
-        .modal-title h3{font-size:22px;margin:0}.modal-title p{color:#9ca3af;margin:2px 0 0;font-size:13px}
-        .close{position:absolute;right:14px;top:12px;border:0;width:36px;height:36px;border-radius:99px;background:rgba(255,255,255,.08);color:#fff;font-size:22px;cursor:pointer}
+        .modal-title h3{font-size:22px;margin:0;color:#ff3333}.modal-title p{color:#aa8888;margin:2px 0 0;font-size:13px}
+        .close{position:absolute;right:14px;top:12px;border:0;width:36px;height:36px;border-radius:99px;background:rgba(255,50,50,.08);color:#ff8888;font-size:22px;cursor:pointer}
         .modal-btn{width:100%;padding:14px;border:0;border-radius:14px;font-weight:900;font-size:15px;cursor:pointer;margin:6px 0}
         .modal-btn.success{background:linear-gradient(135deg,#22c55e,#15803d);color:#fff}
-        .modal-btn.danger{background:linear-gradient(135deg,#ef4444,#991b1b);color:#fff}
-        .modal-btn.primary{background:linear-gradient(135deg,#ffe55a,#f4b400);color:#0b0b0b}
-        .terminal{background:#020617;border-radius:14px;padding:14px;color:#86efac;font-size:12px;line-height:1.6;min-height:150px;white-space:pre-wrap;border:1px solid rgba(34,197,94,.2);margin:10px 0;font-family:monospace}
+        .modal-btn.danger{background:linear-gradient(135deg,#ff4444,#991b1b);color:#fff}
+        .modal-btn.primary{background:linear-gradient(135deg,#ff4444,#cc0000);color:#fff}
+        .terminal{background:#0a0202;border-radius:14px;padding:14px;color:#ff6666;font-size:12px;line-height:1.6;min-height:150px;white-space:pre-wrap;border:1px solid rgba(255,50,50,.2);margin:10px 0;font-family:monospace}
 
-        .bottom-nav{position:fixed;left:50%;bottom:10px;transform:translateX(-50%);width:min(500px,94vw);height:64px;border:1px solid rgba(255,255,255,.09);background:rgba(18,18,18,.94);backdrop-filter:blur(14px);border-radius:20px;display:grid;grid-template-columns:1fr 1fr 1fr;z-index:30}
-        .bottom-nav button{border:0;background:transparent;color:#8b949e;font-size:20px;font-weight:900;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer}
-        .bottom-nav span{font-size:11px}.bottom-nav .active{color:#facc15}
+        .bottom-nav{position:fixed;left:50%;bottom:10px;transform:translateX(-50%);width:min(500px,94vw);height:64px;border:1px solid rgba(255,50,50,.09);background:rgba(20,5,5,.94);backdrop-filter:blur(14px);border-radius:20px;display:grid;grid-template-columns:1fr 1fr 1fr;z-index:30}
+        .bottom-nav button{border:0;background:transparent;color:#883333;font-size:20px;font-weight:900;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer}
+        .bottom-nav span{font-size:11px}.bottom-nav .active{color:#ff3333}
 
-        .info-panel{position:fixed;top:0;right:0;z-index:60;width:min(360px,88vw);height:100vh;padding:18px;background:rgba(8,8,8,.96);backdrop-filter:blur(18px);border-left:1px solid rgba(255,255,255,.08);transform:translateX(105%);transition:.25s}
+        .info-panel{position:fixed;top:0;right:0;z-index:60;width:min(360px,88vw);height:100vh;padding:18px;background:rgba(10,2,2,.96);backdrop-filter:blur(18px);border-left:1px solid rgba(255,50,50,.08);transform:translateX(105%);transition:.25s}
         .info-panel.active{transform:translateX(0)}
         .info-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px}
-        .info-head button{border:0;border-radius:12px;background:#1f2937;color:white;padding:8px 14px;font-weight:800}
-        .info-item{display:flex;justify-content:space-between;align-items:center;padding:14px;border-radius:16px;background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.08);margin:8px 0;cursor:pointer}
-        .info-item strong{font-size:14px}.info-item p{color:#9ca3af;font-size:12px;margin:2px 0 0}.info-item span{color:#facc15;font-size:20px}
-        #adminInfo{display:flex;flex-direction:column;align-items:center;padding:16px;border-radius:18px;background:rgba(250,204,21,.08);border:1px solid rgba(250,204,21,.2);margin:10px 0}
-        #adminInfo img{width:70px;height:70px;border-radius:50%;border:3px solid #facc15}
-        #adminInfo .name{color:#facc15;font-weight:950;font-size:18px;margin:6px 0 2px}
-        #adminInfo .zalo{color:#d1d5db;font-size:13px;letter-spacing:2px}
+        .info-head h2{color:#ff3333}.info-head button{border:0;border-radius:12px;background:#2a1a1a;color:#ff8888;padding:8px 14px;font-weight:800}
+        .info-item{display:flex;justify-content:space-between;align-items:center;padding:14px;border-radius:16px;background:rgba(255,255,255,.055);border:1px solid rgba(255,50,50,.08);margin:8px 0;cursor:pointer}
+        .info-item strong{font-size:14px;color:#ff8888}.info-item p{color:#aa8888;font-size:12px;margin:2px 0 0}.info-item span{color:#ff3333;font-size:20px}
+        #adminInfo{display:flex;flex-direction:column;align-items:center;padding:16px;border-radius:18px;background:rgba(255,50,50,.08);border:1px solid rgba(255,50,50,.2);margin:10px 0}
+        #adminInfo img{width:70px;height:70px;border-radius:50%;border:3px solid #ff3333}
+        #adminInfo .name{color:#ff3333;font-weight:950;font-size:18px;margin:6px 0 2px}
+        #adminInfo .zalo{color:#aa8888;font-size:13px;letter-spacing:2px}
 
         .overlay{position:fixed;inset:0;z-index:55;background:rgba(0,0,0,.6);backdrop-filter:blur(3px);display:none}
 
         .speed-level-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:10px 0}
-        .speed-level{padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);text-align:center;cursor:pointer;transition:.2s;color:#9ca3af}
-        .speed-level.active{border-color:#facc15;background:rgba(250,204,21,.12);color:#facc15}
+        .speed-level{padding:12px;border-radius:12px;border:1px solid rgba(255,50,50,.1);background:rgba(255,50,50,.04);text-align:center;cursor:pointer;transition:.2s;color:#aa8888}
+        .speed-level.active{border-color:#ff3333;background:rgba(255,50,50,.12);color:#ff3333}
         .speed-level b{display:block;font-size:16px;font-weight:950}
-        .speed-level small{font-size:10px;color:#666}
-        .speed-meter{width:100%;height:8px;background:rgba(255,255,255,.08);border-radius:999px;overflow:hidden;margin:10px 0}
-        .speed-meter div{height:100%;border-radius:999px;background:linear-gradient(90deg,#22c55e,#facc15,#f97316);transition:width .2s}
+        .speed-level small{font-size:10px;color:#553333}
+        .speed-meter{width:100%;height:8px;background:rgba(255,50,50,.08);border-radius:999px;overflow:hidden;margin:10px 0}
+        .speed-meter div{height:100%;border-radius:999px;background:linear-gradient(90deg,#22c55e,#ff4444,#ff0000);transition:width .2s}
 
-        .speed-status{display:flex;justify-content:space-between;align-items:center;padding:12px;border-radius:12px;background:rgba(255,255,255,.04);margin:10px 0}
-        .speed-status .status{font-weight:900;color:#4ade80}
-        .speed-status .status.off{color:#f87171}
+        .speed-status{display:flex;justify-content:space-between;align-items:center;padding:12px;border-radius:12px;background:rgba(255,50,50,.04);margin:10px 0}
+        .speed-status .status{font-weight:900;color:#ff6666}
+        .speed-status .status.off{color:#663333}
         .speed-btn-group{display:flex;gap:10px;margin:10px 0}
         .speed-btn-group button{flex:1;padding:12px;border-radius:12px;border:0;font-weight:900;font-size:14px;cursor:pointer;transition:.2s}
         .speed-btn-group button.on{background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff}
-        .speed-btn-group button.off{background:rgba(255,255,255,.08);color:#9ca3af}
+        .speed-btn-group button.off{background:rgba(255,50,50,.08);color:#aa8888}
 
         .game-selector-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:16px 0}
-        .game-option{padding:20px;border-radius:18px;border:2px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);text-align:center;cursor:pointer;transition:.2s}
-        .game-option.active{border-color:#facc15;background:rgba(250,204,21,.12)}
+        .game-option{padding:20px;border-radius:18px;border:2px solid rgba(255,50,50,.1);background:rgba(255,50,50,.04);text-align:center;cursor:pointer;transition:.2s}
+        .game-option.active{border-color:#ff3333;background:rgba(255,50,50,.12)}
         .game-option .game-icon{font-size:48px;display:block;margin-bottom:8px}
-        .game-option .game-name{font-weight:950;font-size:16px;color:#fff}
-        .game-option .game-desc{font-size:11px;color:#9ca3af;margin-top:4px}
+        .game-option .game-name{font-weight:950;font-size:16px;color:#ff8888}
+        .game-option .game-desc{font-size:11px;color:#aa8888;margin-top:4px}
         .game-start-btn{width:100%;padding:16px;border:0;border-radius:16px;background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff;font-weight:950;font-size:18px;cursor:pointer;margin-top:10px}
         .game-start-btn:active{transform:scale(.97)}
         .game-start-btn:disabled{opacity:0.5;cursor:not-allowed}
+
+        /* Progress bar for feature activation */
+        .progress-overlay{position:fixed;inset:0;z-index:80;display:none;place-items:center;background:rgba(0,0,0,.75);backdrop-filter:blur(6px)}
+        .progress-card{width:min(340px,85vw);padding:30px;border-radius:24px;background:rgba(20,5,5,.96);border:1px solid rgba(255,50,50,.2);text-align:center}
+        .progress-card .icon{font-size:48px;margin-bottom:12px}
+        .progress-card .name{color:#ff8888;font-weight:950;font-size:18px;margin-bottom:8px}
+        .progress-card .bar-bg{width:100%;height:8px;background:rgba(255,50,50,.15);border-radius:999px;overflow:hidden;margin:12px 0}
+        .progress-card .bar-fill{height:100%;width:0%;border-radius:999px;background:linear-gradient(90deg,#ff4444,#ff0000);transition:width .05s linear}
+        .progress-card .status-text{color:#aa8888;font-size:14px;font-weight:800}
 
         @media(max-width:430px){.gate-card{padding:18px}.brand-logo img{width:140px;height:140px}.gate h1{font-size:28px}.speed-level-grid{grid-template-columns:1fr 1fr}}
     </style>
@@ -143,13 +152,13 @@
         </div>
         <div id="keyExpiryDisplay" style="display:none;">🔑 Còn: --</div>
         <div class="input-row">
-            <span style="font-size:20px;color:#facc15;">⌨</span>
+            <span style="font-size:20px;color:#ff3333;">⌨</span>
             <input type="text" id="keyInput" placeholder="Nhập key Android..." autocomplete="off">
-            <button id="loginBtn" style="border:0;background:transparent;color:#facc15;font-size:22px;cursor:pointer;">➤</button>
+            <button id="loginBtn" style="border:0;background:transparent;color:#ff3333;font-size:22px;cursor:pointer;">➤</button>
         </div>
         <div class="message" id="loginMessage"></div>
         <button class="primary-btn" id="loginBtnFull">LOGIN</button>
-        <div style="margin-top:15px;font-size:13px;color:#9ca3af;">Liên hệ: <span style="color:#facc15;font-weight:900;cursor:pointer;" onclick="window.open('https://zalo.me/976457016','_blank')">0976457016</span></div>
+        <div style="margin-top:15px;font-size:13px;color:#aa8888;">Liên hệ: <span style="color:#ff3333;font-weight:900;cursor:pointer;" onclick="window.open('https://zalo.me/976457016','_blank')">0976457016</span></div>
     </div>
 </div>
 
@@ -173,7 +182,7 @@
         <div class="row"><span class="label">⏳ HẠN</span><span class="value" id="expiryDisplay">---</span></div>
         <div class="row"><span class="label">📋 LOẠI</span><span id="keyTypeBadge" class="type-badge free">FREE</span></div>
         <div class="row"><span class="label">📱 THIẾT BỊ</span><span class="value" id="deviceCountDisplay">0/--</span></div>
-        <div class="row"><span class="label">📱 NỀN TẢNG</span><span class="value" id="platformDisplay" style="color:#4ade80;">ANDROID</span></div>
+        <div class="row"><span class="label">📱 NỀN TẢNG</span><span class="value" id="platformDisplay" style="color:#ff6666;">ANDROID</span></div>
     </div>
 
     <div class="vip-card">
@@ -193,6 +202,16 @@
         <button class="active"><span>🏠</span><span>Trang chủ</span></button>
         <button><span>📋</span><span>Lịch sử</span></button>
         <button id="settingsNav"><span>⚙️</span><span>Cài đặt</span></button>
+    </div>
+</div>
+
+<!-- Progress Overlay -->
+<div class="progress-overlay" id="progressOverlay">
+    <div class="progress-card">
+        <div class="icon" id="progressIcon">⚡</div>
+        <div class="name" id="progressName">Đang bật...</div>
+        <div class="bar-bg"><div class="bar-fill" id="progressFill"></div></div>
+        <div class="status-text" id="progressStatus">0%</div>
     </div>
 </div>
 
@@ -240,7 +259,7 @@
             <div class="speed-level" data-speed="max"><b>CỰC MẠNH</b><small>95%</small></div>
         </div>
         <div class="speed-meter"><div id="speedMeterFill" style="width:45%"></div></div>
-        <input type="range" id="speedRange" min="5" max="100" value="45" style="width:100%;accent-color:#facc15;">
+        <input type="range" id="speedRange" min="5" max="100" value="45" style="width:100%;accent-color:#ff3333;">
         <div class="speed-btn-group">
             <button class="on" id="speedOnBtn">BẬT</button>
             <button class="off" id="speedOffBtn">TẮT</button>
@@ -259,7 +278,7 @@
         <div><strong>Zalo</strong><p>0976457016</p></div><span>💬</span>
     </div>
     <button class="modal-btn success" id="logoutBtn" style="margin-top:10px;">🚪 Đăng xuất</button>
-    <div style="text-align:center;color:#9ca3af;font-size:12px;margin-top:15px;">© 2026 NP</div>
+    <div style="text-align:center;color:#aa8888;font-size:12px;margin-top:15px;">© 2026 NP</div>
 </div>
 
 <div class="overlay" id="overlay"></div>
@@ -292,6 +311,7 @@ let checkInterval = null;
 let expiryInterval = null;
 let currentKeyType = 'free';
 let selectedGame = 'freefire';
+let isProcessing = false;
 
 // ==================== FEATURES ====================
 const ALL_FEATURES = [
@@ -330,6 +350,41 @@ function showToast(msg) {
     t.classList.add('active');
     clearTimeout(window.toastTimeout);
     window.toastTimeout = setTimeout(() => t.classList.remove('active'), 2500);
+}
+
+// ==================== PROGRESS BAR ====================
+function showProgress(featureName, icon = '⚡') {
+    return new Promise((resolve) => {
+        const overlay = document.getElementById('progressOverlay');
+        const fill = document.getElementById('progressFill');
+        const status = document.getElementById('progressStatus');
+        const nameEl = document.getElementById('progressName');
+        const iconEl = document.getElementById('progressIcon');
+        
+        iconEl.textContent = icon;
+        nameEl.textContent = 'Đang bật: ' + featureName;
+        fill.style.width = '0%';
+        status.textContent = '0%';
+        overlay.style.display = 'flex';
+        
+        let progress = 0;
+        const interval = setInterval(() => {
+            progress += 2;
+            if (progress >= 100) {
+                progress = 100;
+                fill.style.width = '100%';
+                status.textContent = '100%';
+                clearInterval(interval);
+                setTimeout(() => {
+                    overlay.style.display = 'none';
+                    resolve();
+                }, 200);
+            } else {
+                fill.style.width = progress + '%';
+                status.textContent = progress + '%';
+            }
+        }, 20); // 20ms * 50 = 1000ms (1 giây)
+    });
 }
 
 // ==================== ANDROID BRIDGE ====================
@@ -413,7 +468,7 @@ function getKeyLevel(keyData) {
     return 'free';
 }
 
-// ==================== RENDER FEATURES ====================
+// ==================== RENDER FEATURES (TẤT CẢ OFF) ====================
 function renderFeatures(keyLevel) {
     const container = document.getElementById('featureContainer');
     const levelNum = KEY_LEVELS[keyLevel]?.level || 1;
@@ -441,8 +496,8 @@ function renderFeatures(keyLevel) {
             const locked = !isAllowed;
             const lockClass = locked ? 'locked' : '';
             const tagHtml = f.tag ? `<span class="vip-tag">${f.tag}</span>` : '';
-            const savedState = localStorage.getItem('toggle_' + f.id) === 'true';
-            const activeClass = savedState && !locked ? 'active' : '';
+            // TẤT CẢ ĐỀU OFF khi mới vào
+            const activeClass = '';
             
             html += `
                 <div class="feature-item" data-feature="${f.id}">
@@ -461,13 +516,17 @@ function renderFeatures(keyLevel) {
     container.innerHTML = html;
     updateVipStats(keyLevel);
     
-    const speedEnabled = localStorage.getItem(STORAGE.SPEED_ENABLED) === 'true';
-    if (speedEnabled) {
-        const sw = document.querySelector('.feature-item[data-feature="speed"] .switch');
-        if (sw) sw.classList.add('active');
-        renderSpeedUI();
-        applySpeedMode();
-    }
+    // Không khôi phục trạng thái cũ - tất cả đều OFF
+    // Xóa localStorage của các toggle cũ
+    ALL_FEATURES.forEach(f => {
+        localStorage.removeItem('toggle_' + f.id);
+    });
+    localStorage.removeItem(STORAGE.SPEED_ENABLED);
+    localStorage.removeItem(STORAGE.SPEED_LEVEL);
+    localStorage.removeItem(STORAGE.SPEED_VALUE);
+    
+    renderSpeedUI();
+    applySpeedMode();
     updateVipStats(keyLevel);
 }
 
@@ -657,54 +716,28 @@ function handleLogout() {
     document.getElementById('keyExpiryDisplay').style.display = 'none';
     document.querySelectorAll('.feature-item .switch').forEach(sw => {
         sw.classList.remove('active');
-        const id = sw.dataset.feature;
-        if (id && id !== 'speed' && id !== 'optimize') localStorage.setItem('toggle_' + id, 'false');
     });
     showToast('🚪 Đã đăng xuất');
 }
 
-// ==================== OPEN GAME TRỰC TIẾP KHÔNG CẦN THỦ CÔNG ====================
+// ==================== OPEN GAME TRỰC TIẾP ANDROID ====================
 function openGameDirect(version) {
-    // Package names
     const packages = {
         'freefire': 'com.dts.freefireth',
         'freefiremax': 'com.dts.freefiremax'
     };
-    
     const scheme = version === 'freefiremax' ? 'freefiremax://' : 'freefireth://';
     const pkg = packages[version] || packages['freefire'];
     
-    // Kiểm tra nền tảng
-    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-    
-    if (isIOS) {
-        showToast('📱 Hệ điều hành iOS không hỗ trợ mở tự động!');
-        return;
-    }
-    
-    // Android: mở bằng intent (cách mạnh nhất)
     try {
-        // Cách 1: Intent URL
+        // Android: mở bằng intent
         const intentUrl = `intent://${version === 'freefiremax' ? 'freefiremax' : 'freefire'}#Intent;package=${pkg};end;`;
         window.location.href = intentUrl;
-        
-        // Fallback: nếu intent không hoạt động, dùng scheme
-        setTimeout(() => {
-            const iframe = document.createElement("iframe");
-            iframe.style.display = "none";
-            iframe.src = scheme;
-            document.body.appendChild(iframe);
-            setTimeout(() => iframe.remove(), 3000);
-        }, 500);
-        
-        // Cách 2: Trực tiếp location.href với scheme
         setTimeout(() => {
             window.location.href = scheme;
-        }, 1000);
-        
+        }, 500);
         showToast('🚀 Đang mở ' + (version === 'freefiremax' ? 'Free Fire Max' : 'Free Fire'));
     } catch(e) {
-        // Fallback cuối cùng
         window.location.href = scheme;
         showToast('🚀 Đang mở game...');
     }
@@ -743,7 +776,6 @@ function startSelectedGame() {
     document.getElementById('gameSelectorModal').style.display = 'none';
     document.getElementById('overlay').style.display = 'none';
     
-    // Mở game trực tiếp sau 300ms
     setTimeout(() => {
         openGameDirect(selectedGame);
         btn.disabled = false;
@@ -869,11 +901,12 @@ document.addEventListener('DOMContentLoaded', function() {
         applySpeedMode();
     });
     
-    // Toggle switches
-    document.addEventListener('click', function(e) {
+    // Toggle switches - với progress bar
+    document.addEventListener('click', async function(e) {
         const sw = e.target.closest('.switch:not(.locked)');
         if (!sw) return;
         if (!isLoggedIn) { showToast("Chưa đăng nhập!"); return; }
+        if (isProcessing) { showToast("Đang xử lý, vui lòng đợi!"); return; }
         
         const feature = sw.dataset.feature;
         if (!feature) return;
@@ -885,10 +918,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 sw.classList.remove('active');
                 setSpeedEnabled(false);
             } else {
+                isProcessing = true;
+                await showProgress('SPEED', '⚡');
                 sw.classList.add('active');
                 document.getElementById('speedModal').style.display = 'flex';
                 document.getElementById('overlay').style.display = 'block';
                 renderSpeedUI();
+                setSpeedEnabled(true, false);
+                isProcessing = false;
             }
             return;
         }
@@ -896,6 +933,8 @@ document.addEventListener('DOMContentLoaded', function() {
         // OPTIMIZE
         if (feature === 'optimize') {
             if (!sw.classList.contains('active')) {
+                isProcessing = true;
+                await showProgress('TỐI ƯU MAX', '⚡');
                 document.getElementById('optimizeModal').style.display = 'flex';
                 document.getElementById('overlay').style.display = 'block';
                 document.getElementById('optimizeTerminal').textContent = '🚀 Khởi tạo tối ưu MAX...\n🔍 Đang quét hệ thống...';
@@ -924,6 +963,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     }, 500);
                 }, 500);
                 sw.classList.add('active');
+                isProcessing = false;
             } else {
                 sw.classList.remove('active');
                 showToast('⛔ Đã tắt TỐI ƯU MAX');
@@ -931,13 +971,29 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         
-        // Normal toggle
-        sw.classList.toggle('active');
-        const state = sw.classList.contains('active');
-        localStorage.setItem('toggle_' + feature, state ? 'true' : 'false');
-        toggleFeature(feature, state);
-        const name = sw.closest('.feature-item')?.querySelector('.info b')?.textContent || feature;
-        showToast(state ? '✅ Đã bật ' + name : '⛔ Đã tắt ' + name);
+        // Normal toggle - với progress bar
+        const isActive = sw.classList.contains('active');
+        const featureObj = ALL_FEATURES.find(f => f.id === feature);
+        const name = featureObj?.name || feature;
+        
+        if (!isActive) {
+            // Bật - hiện progress
+            isProcessing = true;
+            await showProgress(name, featureObj?.icon || '⚡');
+            sw.classList.add('active');
+            const state = true;
+            localStorage.setItem('toggle_' + feature, 'true');
+            toggleFeature(feature, state);
+            showToast('✅ Đã bật ' + name);
+            isProcessing = false;
+        } else {
+            // Tắt - không cần progress
+            sw.classList.remove('active');
+            const state = false;
+            localStorage.setItem('toggle_' + feature, 'false');
+            toggleFeature(feature, state);
+            showToast('⛔ Đã tắt ' + name);
+        }
         updateVipStats(currentKeyType);
     });
     
