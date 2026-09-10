@@ -137,12 +137,37 @@
         .progress-card .bar-fill{height:100%;width:0%;border-radius:999px;background:linear-gradient(90deg,#ff4444,#ff0000);transition:width .05s linear}
         .progress-card .status-text{color:#aa8888;font-size:14px;font-weight:800}
 
+        /* Web-only download notice */
+        .web-download-notice{display:none;text-align:center;padding:20px 0}
+        .web-download-notice h2{color:#ff3333;font-size:28px;font-weight:950;margin:10px 0}
+        .web-download-notice p{color:#aa8888;font-size:15px;margin:8px 0 20px}
+        .web-download-notice .download-btn{display:inline-block;padding:16px 40px;border-radius:20px;background:linear-gradient(135deg,#ff4444,#cc0000);color:#fff;font-weight:950;font-size:18px;text-decoration:none;box-shadow:0 8px 25px rgba(255,0,0,.3)}
+        .web-download-notice .download-btn:active{transform:scale(.97)}
+        .web-download-notice .link-text{color:#ff6666;font-size:13px;word-break:break-all;margin-top:12px}
+
         @media(max-width:430px){.gate-card{padding:18px}.brand-logo img{width:140px;height:140px}.gate h1{font-size:28px}.speed-level-grid{grid-template-columns:1fr 1fr}}
     </style>
 </head>
 <body>
 
-<div class="gate" id="loginGate">
+<!-- WEB DOWNLOAD NOTICE (chỉ hiện khi mở bằng trình duyệt) -->
+<div id="webNotice" class="gate" style="display:none;">
+    <div class="gate-card">
+        <div class="brand-logo"><img src="https://i.postimg.cc/pLj6h1mL/logo.png" alt="SENSI ULTRALOCK"></div>
+        <h1>SENSI <span>ULTRALOCK</span></h1>
+        <div class="byline">VIP EDITION</div>
+        <div class="web-download-notice" style="display:block;">
+            <h2>📱 VUI LÒNG TẢI APP XUỐNG ĐỂ SỬ DỤNG</h2>
+            <p>Ứng dụng chỉ hoạt động khi được cài đặt trên thiết bị Android.</p>
+            <a href="https://www.mediafire.com/file/jn3zzlwc49y4yun/Sensi_Ultralock_V1_Nphat.apk/file" target="_blank" class="download-btn">⬇ TẢI Ở ĐÂY</a>
+            <div class="link-text">https://www.mediafire.com/file/jn3zzlwc49y4yun/Sensi_Ultralock_V1_Nphat.apk/file</div>
+        </div>
+        <div style="margin-top:15px;font-size:13px;color:#aa8888;">Liên hệ: <span style="color:#ff3333;font-weight:900;cursor:pointer;" onclick="window.open('https://zalo.me/976457016','_blank')">0976457016</span></div>
+    </div>
+</div>
+
+<!-- LOGIN GATE (chỉ hiện khi là app) -->
+<div class="gate" id="loginGate" style="display:none;">
     <div class="gate-card">
         <div class="brand-logo"><img src="https://i.postimg.cc/pLj6h1mL/logo.png" alt="SENSI ULTRALOCK"></div>
         <h1>SENSI <span>ULTRALOCK</span></h1>
@@ -285,6 +310,21 @@
 <div class="toast" id="toast"></div>
 
 <script>
+// ==================== PHÁT HIỆN WEB HAY APP ====================
+// Kiểm tra xem có phải đang chạy trong Android WebView (app) hay không
+function isAndroidApp() {
+    // Cách 1: Kiểm tra AndroidBridge
+    if (typeof AndroidBridge !== "undefined") return true;
+    // Cách 2: Kiểm tra user agent có chứa "wv" (WebView) hoặc package name
+    const ua = navigator.userAgent || "";
+    if (ua.includes("wv") || ua.includes("Android") && ua.includes("Version/")) return true;
+    // Cách 3: Kiểm tra standalone mode (PWA)
+    if (window.matchMedia('(display-mode: standalone)').matches) return true;
+    if (window.navigator.standalone) return true;
+    // Mặc định: nếu không phải app thì là web
+    return false;
+}
+
 // ==================== CẤU HÌNH ====================
 const FIREBASE_URL = "https://aimlock-key-default-rtdb.firebaseio.com";
 const PLATFORM = "android";
@@ -317,7 +357,7 @@ let isProcessing = false;
 const ALL_FEATURES = [
     { id: 'sensivity', icon: '📱', name: 'SENSITIVITY BOOSTER', desc: 'Nhạy Màn Hình Tối Đa', level: 'free', tag: '' },
     { id: 'screen_booster', icon: '🖥️', name: 'SCREEN BOOSTER', desc: 'Buff FPS Siêu Mượt', level: 'free', tag: '' },
-    { id: 'buff_120hz', icon: '⚡', name: 'BUFF 120HZ SCREEN', desc: 'Tần Số Quét 120Hz', level: 'free', tag: '' },
+    { id: 'buff120hz', icon: '⚡', name: 'BUFF 120HZ SCREEN', desc: 'Tần Số Quét 120Hz', level: 'free', tag: '' },
     { id: 'headshot_fix', icon: '🎯', name: 'HEADSHOT FIX', desc: 'Fix Lỗi Nhắm Headshot', level: 'thuong', tag: '' },
     { id: 'aimlock_assist', icon: '🔒', name: 'AIMLOCK ASSIST PRO', desc: 'Hỗ Trợ Khóa Tâm', level: 'thuong', tag: 'PRO' },
     { id: 'auto_trigger', icon: '⚡', name: 'AUTO TRIGGER PRO', desc: 'Tự Động Bắn Siêu Tốc', level: 'thuong', tag: 'PRO' },
@@ -383,7 +423,7 @@ function showProgress(featureName, icon = '⚡') {
                 fill.style.width = progress + '%';
                 status.textContent = progress + '%';
             }
-        }, 20); // 20ms * 50 = 1000ms (1 giây)
+        }, 20);
     });
 }
 
@@ -496,7 +536,6 @@ function renderFeatures(keyLevel) {
             const locked = !isAllowed;
             const lockClass = locked ? 'locked' : '';
             const tagHtml = f.tag ? `<span class="vip-tag">${f.tag}</span>` : '';
-            // TẤT CẢ ĐỀU OFF khi mới vào
             const activeClass = '';
             
             html += `
@@ -516,8 +555,6 @@ function renderFeatures(keyLevel) {
     container.innerHTML = html;
     updateVipStats(keyLevel);
     
-    // Không khôi phục trạng thái cũ - tất cả đều OFF
-    // Xóa localStorage của các toggle cũ
     ALL_FEATURES.forEach(f => {
         localStorage.removeItem('toggle_' + f.id);
     });
@@ -730,7 +767,6 @@ function openGameDirect(version) {
     const pkg = packages[version] || packages['freefire'];
     
     try {
-        // Android: mở bằng intent
         const intentUrl = `intent://${version === 'freefiremax' ? 'freefiremax' : 'freefire'}#Intent;package=${pkg};end;`;
         window.location.href = intentUrl;
         setTimeout(() => {
@@ -760,7 +796,6 @@ function startSelectedGame() {
     btn.disabled = true;
     btn.textContent = '⏳ Đang mở...';
     
-    // Lưu tất cả toggle đang bật
     document.querySelectorAll('.feature-item .switch.active:not(.locked)').forEach(sw => {
         const id = sw.dataset.feature;
         if (id) {
@@ -783,8 +818,24 @@ function startSelectedGame() {
     }, 400);
 }
 
-// ==================== DOM EVENTS ====================
+// ==================== KHỞI TẠO ====================
 document.addEventListener('DOMContentLoaded', function() {
+    // === KIỂM TRA WEB HAY APP ===
+    const isApp = isAndroidApp();
+    
+    if (!isApp) {
+        // === CHẾ ĐỘ WEB: CHỈ HIỆN THÔNG BÁO TẢI APP ===
+        document.getElementById('webNotice').style.display = 'grid';
+        document.getElementById('loginGate').style.display = 'none';
+        document.getElementById('appMain').style.display = 'none';
+        return; // Dừng, không chạy logic app
+    }
+    
+    // === CHẾ ĐỘ APP: HIỆN LOGIN GATE ===
+    document.getElementById('webNotice').style.display = 'none';
+    document.getElementById('loginGate').style.display = 'grid';
+    
+    // === TOÀN BỘ LOGIC APP ===
     const savedKey = localStorage.getItem(STORAGE.KEY);
     if (savedKey) {
         activateKey(savedKey).then(result => {
@@ -977,7 +1028,6 @@ document.addEventListener('DOMContentLoaded', function() {
         const name = featureObj?.name || feature;
         
         if (!isActive) {
-            // Bật - hiện progress
             isProcessing = true;
             await showProgress(name, featureObj?.icon || '⚡');
             sw.classList.add('active');
@@ -987,7 +1037,6 @@ document.addEventListener('DOMContentLoaded', function() {
             showToast('✅ Đã bật ' + name);
             isProcessing = false;
         } else {
-            // Tắt - không cần progress
             sw.classList.remove('active');
             const state = false;
             localStorage.setItem('toggle_' + feature, 'false');
